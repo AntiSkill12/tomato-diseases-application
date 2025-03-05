@@ -1,44 +1,53 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Button } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Hasil = ({ route, navigation }) => {
-  const { detectionResult, capturedImage } = route.params; // Tambahkan capturedImage untuk gambar sementara
+  const { detectionResult, capturedImage } = route.params;
 
-  // Ambil data yang diperlukan
-  const imageUrl = detectionResult.image_url || '';  // URL gambar dari backend
+  const imageUrl = detectionResult.image_url || '';
   const keterangan = detectionResult.Keterangan || 'Tidak ada keterangan';
-  let kondisiTomat = detectionResult["Kondisi Tomat"] || 'Tidak tersedia';
+  let kondisiTomat = detectionResult['Kondisi Tomat'] || 'Tidak tersedia';
 
-  // Jika kondisiTomat adalah "Bukan Gambar Tomat", ganti menjadi "Bukan Buah Tomat"
-  if (kondisiTomat === "Bukan Gambar Tomat") {
-    kondisiTomat = "Bukan Buah Tomat";
+  if (kondisiTomat === 'Bukan Gambar Tomat') {
+    kondisiTomat = 'Bukan Buah Tomat';
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
+        <Ionicons
+          name="arrow-back"
+          size={24}
+          color="black"
+          onPress={() => navigation.goBack()}
+        />
         <Text style={styles.headerTitle}>Hasil Identifikasi</Text>
       </View>
 
-      {/* Gambar hasil deteksi */}
       {imageUrl ? (
         <Image source={{ uri: imageUrl }} style={styles.imageResult} />
-      ) : capturedImage ? ( 
-        // Jika tidak ada image_url tapi ada capturedImage (gambar sementara dari IoT)
+      ) : capturedImage ? (
         <Image source={{ uri: capturedImage }} style={styles.imageResult} />
       ) : (
         <Text style={styles.noImageText}>Gambar tidak tersedia</Text>
       )}
 
-      {/* Kondisi Tomat */}
       <Text style={styles.sectionTitle}>Kondisi Tomat</Text>
       <Text style={styles.sectionContent}>{kondisiTomat}</Text>
 
-      {/* Keterangan */}
       <Text style={styles.sectionTitle}>Keterangan</Text>
       <Text style={styles.sectionContent}>{keterangan}</Text>
+
+      {/* Tombol Deteksi Penyakit */}
+      <Button
+        title="Deteksi Penyakit"
+        onPress={() =>
+          navigation.navigate('Deteksi', {
+            isTriggered: true, // Trigger langsung deteksi
+          })
+        }
+      />
     </View>
   );
 };
